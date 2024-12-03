@@ -16,6 +16,7 @@ struct TextToASCIIArt: View {
     @StateObject var ascii = ASCIIModel()
     @State var copiedToClipboard: Bool = false
     @State var selectedFont: String = "standard"
+    @FocusState var focus: Bool
     
     private func getText(text: String, font: String) {
         Task {
@@ -59,6 +60,7 @@ struct TextToASCIIArt: View {
                 HStack {
                     TextField("", text: $text)
                         .textFieldStyle(.roundedBorder)
+                        .focused($focus)
                     
                     Button {
                         getText(text: stringTreatment(for: text), font: selectedFont)
@@ -74,13 +76,6 @@ struct TextToASCIIArt: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .padding()
         .toolbar {
-//            ToolbarItem {
-//                Picker("Selected font: \(selectedFont)", selection: $selectedFont) {
-//                    ForEach(ascii.fonts.fonts, id: \.self) { font in
-//                        Text(font.capitalized).tag(font)
-//                    }
-//                }
-//            }
             
             ToolbarItem {
                 Button {
@@ -114,6 +109,9 @@ struct TextToASCIIArt: View {
         }
         .onAppear {
             fetchFonts()
+        }
+        .onTapGesture {
+            focus = false
         }
     }
 }
